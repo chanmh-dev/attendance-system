@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Attendance Summary</title>
+</head>
+<body>
+  <h2>Attendance Summary</h2>
+  <div id="summary">Loading...</div>
+
+  <script>
+    const appsScriptUrl = "https://script.google.com/macros/s/AKfycbyd-EwBqC79CXhbMZq2DyGuqtx9vfHbloi4rBrUd62EK2XdPO1vaqosWzAHT8WqU24VBw/exec";
+
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    const id = getQueryParam("id");
+    if (id) {
+      fetch(appsScriptUrl + "?id=" + id)
+        .then(res => res.json())
+        .then(data => {
+          if (data.error) {
+            document.getElementById("summary").innerText = "Error: " + data.error;
+          } else {
+            document.getElementById("summary").innerHTML = `
+              <p><strong>Name of Contact Person:</strong> ${data.contact}</p>
+              <p><strong>Organisation:</strong> ${data.org}</p>
+              <p><strong>No of Participants:</strong> ${data.actualParticipants}</p>
+              <p><strong>Status:</strong> ${data.status}</p>
+              <p><strong>Duplicate:</strong> ${data.duplicate}</p>
+            `;
+          }
+        });
+    } else {
+      document.getElementById("summary").innerText = "No submission ID provided.";
+    }
+  </script>
+</body>
+</html>

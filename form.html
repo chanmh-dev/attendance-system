@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Attendance Form</title>
+</head>
+<body>
+  <h2>Attendance Form</h2>
+  <form id="attendanceForm">
+    <label>Mobile Number:</label><br>
+    <input type="text" name="mobile" required><br><br>
+
+    <label>Actual No of Participants:</label><br>
+    <input type="number" name="actualParticipants" required><br><br>
+
+    <label>Name of Organisation:</label><br>
+    <input type="text" name="org"><br><br>
+
+    <label>Name of Contact Person:</label><br>
+    <input type="text" name="contact"><br><br>
+
+    <label>Email Address:</label><br>
+    <input type="email" name="email"><br><br>
+
+    <button type="submit">Submit</button>
+  </form>
+
+  <script>
+    const appsScriptUrl = "https://script.google.com/macros/s/AKfycbyd-EwBqC79CXhbMZq2DyGuqtx9vfHbloi4rBrUd62EK2XdPO1vaqosWzAHT8WqU24VBw/exec";
+
+    document.getElementById("attendanceForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const formData = Object.fromEntries(new FormData(this).entries());
+
+      fetch(appsScriptUrl, {
+        method: "POST",
+        body: JSON.stringify(formData),
+        headers: { "Content-Type": "application/json" }
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          window.location.href = "summary.html?id=" + data.submissionID;
+        } else {
+          alert("Error: " + data.error);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
