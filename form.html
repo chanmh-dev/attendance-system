@@ -12,6 +12,9 @@
 
     <label>Actual No of Participants:</label><br>
     <input type="number" name="actualParticipants" required><br><br>
+	
+	<br>
+	<p>Below section is only required for unregistered participant</p>
 
     <label>Name of Organisation:</label><br>
     <input type="text" name="org"><br><br>
@@ -30,11 +33,11 @@
 
     document.getElementById("attendanceForm").addEventListener("submit", function(e) {
       e.preventDefault();
-      const formData = new FormData(this);
+      const formData = Object.fromEntries(new FormData(this).entries());
 
       fetch(appsScriptUrl, {
         method: "POST",
-        body: formData
+        body: new URLSearchParams(formData)
       })
       .then(res => res.json())
       .then(data => {
@@ -43,8 +46,7 @@
         } else {
           alert("Error: " + data.error);
         }
-      })
-      .catch(err => alert("Network error: " + err));
+      });
     });
   </script>
 </body>
