@@ -3,6 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <title>Attendance Summary</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h2 { color: #333; }
+    .status { font-size: 1.2em; font-weight: bold; margin-top: 15px; }
+    .registered { color: green; }
+    .unregistered { color: red; }
+    .duplicate { color: orange; }
+    .info { margin-top: 10px; padding: 10px; border: 1px solid #ccc; border-radius: 8px; background: #f9f9f9; max-width: 500px; }
+  </style>
 </head>
 <body>
   <h2>Attendance Summary</h2>
@@ -10,28 +19,43 @@
 
   <script>
     const urlParams = new URLSearchParams(window.location.search);
-    const submissionID = urlParams.get("id");
-    const appsScriptUrl = "https://script.google.com/macros/s/AKfycbyd-EwBqC79CXhbMZq2DyGuqtx9vfHbloi4rBrUd62EK2XdPO1vaqosWzAHT8WqU24VBw/exec";
+    const id = urlParams.get("id");
 
-    if (!submissionID) {
-      document.getElementById("summary").innerText = "Error: No submission ID provided.";
+    if (!id) {
+      document.getElementById("summary").innerHTML = "<p style='color:red;'>No submission ID provided.</p>";
     } else {
-      fetch(appsScriptUrl + "?id=" + submissionID)
+      fetch("https://script.google.com/macros/s/AKfycbyd-EwBqC79CXhbMZq2DyGuqtx9vfHbloi4rBrUd62EK2XdPO1vaqosWzAHT8WqU24VBw/exec?id=" + id)
         .then(res => res.json())
         .then(data => {
           if (data.success) {
+            let statusText = "";
+            if (data.status === "registered") {
+              statusText = `<span class="status registered">✅ Registered</span>`;
+            } else {
+              statusText = `<span class="status unregistered">❌ Unregistered</span>`;
+            }
+
+            let duplicateText = "";
+            if (data.duplicate === "duplicate") {
+              duplicateText = `<p class="status duplicate">⚠️ Duplicate submission detected</p>`;
+            }
+
             document.getElementById("summary").innerHTML = `
-              <p><strong>Name of Contact Person:</strong> ${data.contact}</p>
-              <p><strong>Organisation Name:</strong> ${data.org}</p>
-              <p><strong>No of Participants:</strong> ${data.actual}</p>
-              <p><strong>Status:</strong> ${data.status}</p>
-              <p><strong>Duplicate:</strong> ${data.duplicate}</p>
+              ${statusText}
+              ${duplicateText}
+              <div class="info">
+                <p><strong>Contact Person:</strong> ${data.contact || "-"}</p>
+                <p><strong>Organisation:</strong> ${data.org || "-"}</p>
+                <p><strong>Participants:</strong> ${data.actual || "-"}</p>
+              </div>
             `;
           } else {
-            document.getElementById("summary").innerText = "Error: " + data.error;
+            document.getElementById("summary").innerHTML = "<p style='color:red;'>Error: " + data.error + "</p>";
           }
         })
-        .catch(err => document.getElementById("summary").innerText = "Network error: " + err);
+        .catch(err => {
+          document.getElementById("summary").innerHTML = "<p style='color:red;'>Request failed: " + err + "</p>";
+        });
     }
   </script>
 </body>
