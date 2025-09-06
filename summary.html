@@ -6,35 +6,32 @@
 </head>
 <body>
   <h2>Attendance Summary</h2>
-  <div id="summary">Loading...</div>
+  <div id="summary"></div>
 
   <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const submissionID = urlParams.get("id");
     const appsScriptUrl = "https://script.google.com/macros/s/AKfycbyd-EwBqC79CXhbMZq2DyGuqtx9vfHbloi4rBrUd62EK2XdPO1vaqosWzAHT8WqU24VBw/exec";
 
-    function getQueryParam(param) {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get(param);
-    }
-
-    const id = getQueryParam("id");
-    if (id) {
-      fetch(appsScriptUrl + "?id=" + id)
+    if (!submissionID) {
+      document.getElementById("summary").innerText = "Error: No submission ID provided.";
+    } else {
+      fetch(appsScriptUrl + "?id=" + submissionID)
         .then(res => res.json())
         .then(data => {
-          if (data.error) {
-            document.getElementById("summary").innerText = "Error: " + data.error;
-          } else {
+          if (data.success) {
             document.getElementById("summary").innerHTML = `
               <p><strong>Name of Contact Person:</strong> ${data.contact}</p>
-              <p><strong>Organisation:</strong> ${data.org}</p>
-              <p><strong>No of Participants:</strong> ${data.actualParticipants}</p>
+              <p><strong>Organisation Name:</strong> ${data.org}</p>
+              <p><strong>No of Participants:</strong> ${data.actual}</p>
               <p><strong>Status:</strong> ${data.status}</p>
               <p><strong>Duplicate:</strong> ${data.duplicate}</p>
             `;
+          } else {
+            document.getElementById("summary").innerText = "Error: " + data.error;
           }
-        });
-    } else {
-      document.getElementById("summary").innerText = "No submission ID provided.";
+        })
+        .catch(err => document.getElementById("summary").innerText = "Network error: " + err);
     }
   </script>
 </body>
