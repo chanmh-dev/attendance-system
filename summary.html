@@ -3,15 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Attendance Summary</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    h2 { color: #333; }
-    .status { font-size: 1.2em; font-weight: bold; margin-top: 15px; }
-    .registered { color: green; }
-    .unregistered { color: red; }
-    .duplicate { color: orange; }
-    .info { margin-top: 10px; padding: 10px; border: 1px solid #ccc; border-radius: 8px; background: #f9f9f9; max-width: 500px; }
-  </style>
 </head>
 <body>
   <h2>Attendance Summary</h2>
@@ -21,42 +12,16 @@
     const urlParams = new URLSearchParams(window.location.search);
     const id = urlParams.get("id");
 
-    if (!id) {
-      document.getElementById("summary").innerHTML = "<p style='color:red;'>No submission ID provided.</p>";
-    } else {
-      fetch("https://script.google.com/macros/s/AKfycbyd-EwBqC79CXhbMZq2DyGuqtx9vfHbloi4rBrUd62EK2XdPO1vaqosWzAHT8WqU24VBw/exec?id=" + id)
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            let statusText = "";
-            if (data.status === "registered") {
-              statusText = `<span class="status registered">✅ Registered</span>`;
-            } else {
-              statusText = `<span class="status unregistered">❌ Unregistered</span>`;
-            }
-
-            let duplicateText = "";
-            if (data.duplicate === "duplicate") {
-              duplicateText = `<p class="status duplicate">⚠️ Duplicate submission detected</p>`;
-            }
-
-            document.getElementById("summary").innerHTML = `
-              ${statusText}
-              ${duplicateText}
-              <div class="info">
-                <p><strong>Contact Person:</strong> ${data.contact || "-"}</p>
-                <p><strong>Organisation:</strong> ${data.org || "-"}</p>
-                <p><strong>Participants:</strong> ${data.actual || "-"}</p>
-              </div>
-            `;
-          } else {
-            document.getElementById("summary").innerHTML = "<p style='color:red;'>Error: " + data.error + "</p>";
-          }
-        })
-        .catch(err => {
-          document.getElementById("summary").innerHTML = "<p style='color:red;'>Request failed: " + err + "</p>";
-        });
-    }
+    // Display values (mock fetch - in practice you'd fetch from Apps Script)
+    document.getElementById("summary").innerHTML = `
+      <p><strong>Name of Contact Person:</strong> value1</p>
+      <p><strong>Organisation name:</strong> value2</p>
+      <p><strong>Participants:</strong> 
+         <span style="font-size:1.4em; font-weight:bold;">value3</span>
+      </p>
+      <p><strong>Status:</strong> value4</p>
+      <p><strong>Duplicate:</strong> value5</p>
+    `;
   </script>
 </body>
 </html>
