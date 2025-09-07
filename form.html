@@ -12,6 +12,9 @@
 
     <label>Actual No of Participants:</label><br>
     <input type="number" name="actualParticipants" required><br><br>
+	
+	<br>
+	<p>The section below is for unregistered participant only</p>
 
     <label>Name of Organisation:</label><br>
     <input type="text" name="org"><br><br>
@@ -26,7 +29,7 @@
   </form>
 
   <script>
-    const appsScriptUrl = "YOUR_WEB_APP_URL";
+    const appsScriptUrl = "https://script.google.com/macros/s/AKfycbyd-EwBqC79CXhbMZq2DyGuqtx9vfHbloi4rBrUd62EK2XdPO1vaqosWzAHT8WqU24VBw/exec";
 
     document.getElementById("attendanceForm").addEventListener("submit", function(e) {
       e.preventDefault();
