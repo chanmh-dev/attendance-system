@@ -14,7 +14,7 @@
     <input type="number" name="actualParticipants" required><br><br>
 	
 	<br>
-	<p>The section below is for unregistered participant only</p>
+	<p>Below section is only required for unregistered participant</p>
 
     <label>Name of Organisation:</label><br>
     <input type="text" name="org"><br><br>
@@ -37,8 +37,7 @@
 
       fetch(appsScriptUrl, {
         method: "POST",
-        body: JSON.stringify(formData),
-        headers: { "Content-Type": "application/json" }
+        body: new URLSearchParams(formData)
       })
       .then(res => res.json())
       .then(data => {
@@ -47,8 +46,7 @@
         } else {
           alert("Error: " + data.error);
         }
-      })
-      .catch(err => alert("Network error: " + err));
+      });
     });
   </script>
 </body>
