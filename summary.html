@@ -6,22 +6,34 @@
 </head>
 <body>
   <h2>Attendance Summary</h2>
-  <div id="summary"></div>
+  <div id="summary">Loading...</div>
 
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const id = urlParams.get("id");
 
-    // Display values (mock fetch - in practice you'd fetch from Apps Script)
-    document.getElementById("summary").innerHTML = `
-      <p><strong>Name of Contact Person:</strong> value1</p>
-      <p><strong>Organisation name:</strong> value2</p>
-      <p><strong>Participants:</strong> 
-         <span style="font-size:1.4em; font-weight:bold;">value3</span>
-      </p>
-      <p><strong>Status:</strong> value4</p>
-      <p><strong>Duplicate:</strong> value5</p>
-    `;
+    const appsScriptUrl = "https://script.google.com/macros/s/AKfycbyd-EwBqC79CXhbMZq2DyGuqtx9vfHbloi4rBrUd62EK2XdPO1vaqosWzAHT8WqU24VBw/exec";
+
+    fetch(appsScriptUrl + "?id=" + id)
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          document.getElementById("summary").innerHTML = `
+            <p><strong>Name of Contact Person:</strong> ${data.contact || ""}</p>
+            <p><strong>Organisation name:</strong> ${data.organisation || ""}</p>
+            <p><strong>Participants:</strong> 
+               <span style="font-size:1.6em; font-weight:bold;">${data.participants || ""}</span>
+            </p>
+            <p><strong>Status:</strong> ${data.status || ""}</p>
+            <p><strong>Duplicate:</strong> ${data.duplicate || ""}</p>
+          `;
+        } else {
+          document.getElementById("summary").innerText = "Error: " + data.error;
+        }
+      })
+      .catch(err => {
+        document.getElementById("summary").innerText = "Network error: " + err;
+      });
   </script>
 </body>
 </html>
