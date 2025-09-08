@@ -1,62 +1,76 @@
-
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
   <title>Attendance Summary</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    h2 { color: #333; }
-    .status { font-size: 1.2em; font-weight: bold; margin-top: 15px; }
-    .registered { color: green; }
-    .unregistered { color: red; }
-    .duplicate { color: orange; }
-    .info { margin-top: 10px; padding: 10px; border: 1px solid #ccc; border-radius: 8px; background: #f9f9f9; max-width: 500px; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      font-size: 36px; /* Bigger font size for Participants */
+      color: #333;
+    }
+    table {
+      margin: 20px auto;
+      border-collapse: collapse;
+      width: 80%;
+      max-width: 600px;
+      background: white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    th, td {
+      padding: 12px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+    th {
+      background: #f2f2f2;
+    }
   </style>
 </head>
 <body>
-  <h2>Attendance Summary</h2>
-  <div id="summary"></div>
+  <h1>Participants</h1>
+  <table>
+    <tr><th>Mobile</th><td id="mobileField"></td></tr>
+    <tr><th>Actual</th><td id="actualField"></td></tr>
+    <tr><th>Organisation</th><td id="orgField"></td></tr>
+    <tr><th>Contact Person</th><td id="contactField"></td></tr>
+    <tr><th>Email</th><td id="emailField"></td></tr>
+    <tr><th>Status</th><td id="statusField"></td></tr>
+    <tr><th>Duplicate</th><td id="duplicateField"></td></tr>
+    <tr><th>Submission ID</th><td id="submissionIDField"></td></tr>
+  </table>
 
   <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const id = urlParams.get("id");
+    function handleResponse(responseText) {
+      try {
+        const data = JSON.parse(responseText);
 
-    if (!id) {
-      document.getElementById("summary").innerHTML = "<p style='color:red;'>No submission ID provided.</p>";
-    } else {
-      fetch("https://script.google.com/macros/s/AKfycbyd-EwBqC79CXhbMZq2DyGuqtx9vfHbloi4rBrUd62EK2XdPO1vaqosWzAHT8WqU24VBw/exec?id=" + id)
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            let statusText = "";
-            if (data.status === "registered") {
-              statusText = `<span class="status registered">✅ Registered</span>`;
-            } else {
-              statusText = `<span class="status unregistered">❌ Unregistered</span>`;
-            }
+        if (data.success) {
+          document.getElementById("mobileField").innerText = data.mobile;
+          document.getElementById("actualField").innerText = data.actual;
+          document.getElementById("orgField").innerText = data.org;
+          document.getElementById("contactField").innerText = data.contact;
+          document.getElementById("emailField").innerText = data.email;
+          document.getElementById("statusField").innerText = data.status;
+          document.getElementById("duplicateField").innerText = data.duplicate;
+          document.getElementById("submissionIDField").innerText = data.submissionID;
+        } else {
+          alert("❌ Error: " + data.error);
+        }
+      } catch (err) {
+        alert("⚠️ Invalid response: " + err.message);
+      }
+    }
 
-            let duplicateText = "";
-            if (data.duplicate === "duplicate") {
-              duplicateText = `<p class="status duplicate">⚠️ Duplicate submission detected</p>`;
-            }
-
-            document.getElementById("summary").innerHTML = `
-              ${statusText}
-              ${duplicateText}
-              <div class="info">
-                <p><strong>Contact Person:</strong> ${data.contact || "-"}</p>
-                <p><strong>Organisation:</strong> ${data.org || "-"}</p>
-                <p><strong>Participants:</strong> ${data.actual || "-"}</p>
-              </div>
-            `;
-          } else {
-            document.getElementById("summary").innerHTML = "<p style='color:red;'>Error: " + data.error + "</p>";
-          }
-        })
-        .catch(err => {
-          document.getElementById("summary").innerHTML = "<p style='color:red;'>Request failed: " + err + "</p>";
-        });
+    // Parse query string for response
+    const params = new URLSearchParams(window.location.search);
+    if (params.has("data")) {
+      handleResponse(decodeURIComponent(params.get("data")));
     }
   </script>
 </body>
