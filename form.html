@@ -1,29 +1,85 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Attendance Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #fafafa;
+      font-size: 18px;
+    }
+    h2 {
+      text-align: center;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    form {
+      max-width: 500px;
+      margin: auto;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+      font-size: 18px;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-top: 6px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 18px;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 15px;
+      font-size: 20px;
+      font-weight: bold;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    p.note {
+      margin-top: 20px;
+      font-size: 16px;
+      color: #555;
+    }
+  </style>
 </head>
 <body>
   <h2>Attendance Form</h2>
   <form id="attendanceForm">
-    <label>Mobile Number:</label><br>
-    <input type="text" name="mobile" required><br><br>
+    <label>Mobile Number:</label>
+    <input type="text" name="mobile" required>
 
-    <label>Actual No of Participants:</label><br>
-    <input type="number" name="actualParticipants" required><br><br>
-	
-	<br>
-	<p>Below section is only required for unregistered participant</p>
+    <label>Actual No of Participants:</label>
+    <input type="number" name="actualParticipants" required>
 
-    <label>Name of Organisation:</label><br>
-    <input type="text" name="org"><br><br>
+    <p class="note">Below section is only required for unregistered participant</p>
 
-    <label>Name of Contact Person:</label><br>
-    <input type="text" name="contact"><br><br>
+    <label>Name of Organisation:</label>
+    <input type="text" name="org">
 
-    <label>Email Address:</label><br>
-    <input type="email" name="email"><br><br>
+    <label>Name of Contact Person:</label>
+    <input type="text" name="contact">
+
+    <label>Email Address:</label>
+    <input type="email" name="email">
 
     <button type="submit">Submit</button>
   </form>
@@ -46,7 +102,8 @@
         } else {
           alert("Error: " + data.error);
         }
-      });
+      })
+      .catch(err => alert("Request failed: " + err));
     });
   </script>
 </body>
