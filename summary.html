@@ -1,18 +1,45 @@
-
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Attendance Summary</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    h2 { color: #333; }
-    .status { font-size: 1.2em; font-weight: bold; margin-top: 15px; }
+    body { 
+      font-family: Arial, sans-serif; 
+      margin: 20px; 
+      background: #fafafa;
+      font-size: 18px;
+    }
+    h2 { 
+      text-align: center; 
+      font-size: 26px; 
+      margin-bottom: 20px;
+    }
+    .status { 
+      font-size: 22px; 
+      font-weight: bold; 
+      margin-top: 20px; 
+      text-align: center;
+    }
     .registered { color: green; }
     .unregistered { color: red; }
     .duplicate { color: orange; }
-    .info { margin-top: 10px; padding: 10px; border: 1px solid #ccc; border-radius: 8px; background: #f9f9f9; max-width: 500px; }
+    .info { 
+      margin-top: 20px; 
+      padding: 20px; 
+      border: 1px solid #ccc; 
+      border-radius: 12px; 
+      background: #fff; 
+      max-width: 600px; 
+      margin-left: auto; 
+      margin-right: auto; 
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .info p {
+      font-size: 18px;
+      margin: 8px 0;
+    }
   </style>
 </head>
 <body>
@@ -24,7 +51,7 @@
     const id = urlParams.get("id");
 
     if (!id) {
-      document.getElementById("summary").innerHTML = "<p style='color:red;'>No submission ID provided.</p>";
+      document.getElementById("summary").innerHTML = "<p style='color:red; text-align:center;'>No submission ID provided.</p>";
     } else {
       fetch("https://script.google.com/macros/s/AKfycbyd-EwBqC79CXhbMZq2DyGuqtx9vfHbloi4rBrUd62EK2XdPO1vaqosWzAHT8WqU24VBw/exec?id=" + id)
         .then(res => res.json())
@@ -32,14 +59,14 @@
           if (data.success) {
             let statusText = "";
             if (data.status === "registered") {
-              statusText = `<span class="status registered">✅ Registered</span>`;
+              statusText = `<div class="status registered">✅ Registered</div>`;
             } else {
-              statusText = `<span class="status unregistered">❌ Unregistered</span>`;
+              statusText = `<div class="status unregistered">❌ Unregistered</div>`;
             }
 
             let duplicateText = "";
             if (data.duplicate === "duplicate") {
-              duplicateText = `<p class="status duplicate">⚠️ Duplicate submission detected</p>`;
+              duplicateText = `<div class="status duplicate">⚠️ Duplicate submission detected</div>`;
             }
 
             document.getElementById("summary").innerHTML = `
@@ -48,15 +75,15 @@
               <div class="info">
                 <p><strong>Contact Person:</strong> ${data.contact || "-"}</p>
                 <p><strong>Organisation:</strong> ${data.org || "-"}</p>
-                <p><strong>Participants:</strong> ${data.actual || "-"}</p>
+                <p><strong>Participants:</strong> <span style="font-size:22px; font-weight:bold;">${data.actual || "-"}</span></p>
               </div>
             `;
           } else {
-            document.getElementById("summary").innerHTML = "<p style='color:red;'>Error: " + data.error + "</p>";
+            document.getElementById("summary").innerHTML = "<p style='color:red; text-align:center;'>Error: " + data.error + "</p>";
           }
         })
         .catch(err => {
-          document.getElementById("summary").innerHTML = "<p style='color:red;'>Request failed: " + err + "</p>";
+          document.getElementById("summary").innerHTML = "<p style='color:red; text-align:center;'>Request failed: " + err + "</p>";
         });
     }
   </script>
